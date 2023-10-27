@@ -1,0 +1,47 @@
+{{#modelPackage}}
+package {{modelPackage}};
+{{/modelPackage}}
+
+import java.util.Objects;
+
+public class {{modelName}} {
+{{#vars}}
+    private {{dataType}} {{name}};
+{{/vars}}
+
+    public {{modelName}}() {
+    }
+
+    public {{modelName}}(
+        {{#vars}}
+        {{dataType}} {{name}}{{#hasMoreVars}},{{/hasMoreVars}}
+        {{/vars}}
+    ) {
+        {{#vars}}
+        this.{{name}} = {{name}};
+        {{/vars}}
+    }
+
+    {{#vars}}
+    public {{dataType}} get{{nameCapitalized}}() {
+        return {{name}};
+    }
+
+    public void set{{nameCapitalized}}({{dataType}} {{name}}) {
+        this.{{name}} = {{name}};
+    }
+    {{/vars}}
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        {{modelName}} {{modelName}} = ({{modelName}}) o;
+        return {{#vars}}Objects.equals({{name}}, {{modelName}}.{{name}}){{#hasMoreVars}} && {{/hasMoreVars}}{{/vars}};
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash({{#vars}}{{name}}{{#hasMoreVars}}, {{/hasMoreVars}}{{/vars}});
+    }
+}

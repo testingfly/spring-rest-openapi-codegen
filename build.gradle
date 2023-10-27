@@ -1,0 +1,106 @@
+import org.openapitools.generator.gradle.plugin.tasks.GenerateTask
+
+plugins {
+    id 'java'
+    id 'org.springframework.boot' version '3.1.2'
+    id 'io.spring.dependency-management' version '1.1.2'
+    id "org.openapi.generator" version "6.6.0"
+}
+
+group = 'com.testingfly'
+version = '0.0.1-SNAPSHOT'
+
+java {
+    sourceCompatibility = '17'
+}
+
+configurations {
+    compileOnly {
+        extendsFrom annotationProcessor
+    }
+}
+
+repositories {
+    mavenCentral()
+}
+
+test {
+    useJUnitPlatform()
+}
+
+configurations {
+    all*.exclude module: 'logback-classic'
+}
+
+sourceSets {
+    main {
+        java {
+            srcDir("$buildDir/open-api-client/src/main/java")
+        }
+    }
+    integrationTest {
+        java {
+            srcDirs = ["src/integrationTest/java",
+                       "src/integrationTest/resources/open-api-client/src/main/java"
+            ]
+        }
+    }
+}
+
+dependencies {
+    implementation 'org.springframework.boot:spring-boot-starter-web'
+    implementation 'org.springdoc:springdoc-openapi-starter-webmvc-ui:2.2.0'
+    implementation 'org.springframework.boot:spring-boot-starter-validation'
+    compileOnly 'org.projectlombok:lombok'
+    developmentOnly 'org.springframework.boot:spring-boot-devtools'
+    annotationProcessor 'org.projectlombok:lombok'
+    testImplementation 'org.springframework.boot:spring-boot-starter-test'
+    integrationTestImplementation 'org.springframework.boot:spring-boot-starter-web'
+    integrationTestImplementation 'org.springdoc:springdoc-openapi-starter-webmvc-ui:2.2.0'
+    integrationTestImplementation('org.springframework.boot:spring-boot-starter-test')
+    integrationTestImplementation('org.openapitools:openapi-generator-maven-plugin:6.6.0')
+}
+
+task openApiGeneratorTest(type: Test) {
+    useJUnitPlatform {
+        includeTags "openApiGeneratorTest"
+    }
+}
+
+tasks.register('integrationTest', Test) {
+    description = 'Runs integration tests.'
+    group = 'verification'
+
+    testClassesDirs = sourceSets.integrationTest.output.classesDirs
+    classpath = sourceSets.integrationTest.runtimeClasspath
+    shouldRunAfter test
+
+    useJUnitPlatform()
+
+    testLogging {
+        events "passed"
+    }
+}
+
+task generateClientSDK(type: GenerateTask) {
+    generatorName = "java"
+    library = "resttemplate"
+    inputSpec = "$rootDir/openapi-specs.json".toString()
+    outputDir = "$rootDir/src/integrationTest/resources/open-api-client"
+    apiPackage = "com.testingfly.api"
+    invokerPackage = "com.testingfly"
+    modelPackage = "com.testingfly"
+    configOptions = [
+            dateLibrary    : "java8",
+            openApiNullable: "false"
+    ]
+    groupId = 'com.testingfly'
+    id = 'client'
+    skipValidateSpec = true
+    logToStderr = true
+    generateAliasAsModel = false
+    enablePostProcessFile = false
+}
+
+
+

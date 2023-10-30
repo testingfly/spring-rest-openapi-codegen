@@ -5,10 +5,20 @@ plugins {
     id 'org.springframework.boot' version '3.1.2'
     id 'io.spring.dependency-management' version '1.1.2'
     id "org.openapi.generator" version "6.6.0"
+    id 'io.qameta.allure' version '2.9.3'
 }
 
 group = 'com.testingfly'
 version = '0.0.1-SNAPSHOT'
+
+//def allureVersion = "2.13.6"
+//def junit5Version = "5.6.2"
+
+compileJava.options.encoding = "UTF-8"
+compileTestJava.options.encoding = "UTF-8"
+//compileIntegrationTestJava.options.encoding = 'UTF-8'
+
+
 
 java {
     sourceCompatibility = '17'
@@ -18,14 +28,41 @@ configurations {
     compileOnly {
         extendsFrom annotationProcessor
     }
+    testCompile
 }
 
 repositories {
     mavenCentral()
+    mavenLocal()
+    maven {
+        url = uri("https://plugins.gradle.org/m2/")
+    }
 }
 
+allure {
+    autoconfigure = true
+//    configuration = "testImplementation"
+    aspectjweaver = true
+    version = "2.8.1"
+
+//    clean = true
+
+    useJUnit5 {
+        version = "2.8.1"
+    }
+}
+
+
 test {
-    useJUnitPlatform()
+    ignoreFailures = true
+    useJUnitPlatform {
+
+    }
+    systemProperty("junit.jupiter.execution.parallel.enabled", "true")
+    systemProperty("junit.jupiter.execution.parallel.config.strategy", "dynamic")
+    systemProperty("junit.jupiter.extensions.autodetection.enabled", "true")
+
+
 }
 
 configurations {
@@ -45,7 +82,10 @@ sourceSets {
             ]
         }
     }
+
 }
+
+
 
 dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-web'
@@ -57,8 +97,12 @@ dependencies {
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
     integrationTestImplementation 'org.springframework.boot:spring-boot-starter-web'
     integrationTestImplementation 'org.springdoc:springdoc-openapi-starter-webmvc-ui:2.2.0'
-    integrationTestImplementation('org.springframework.boot:spring-boot-starter-test')
-    integrationTestImplementation('org.openapitools:openapi-generator-maven-plugin:6.6.0')
+    integrationTestImplementation 'org.springframework.boot:spring-boot-starter-test'
+    integrationTestImplementation 'org.openapitools:openapi-generator-maven-plugin:6.6.0'
+    testImplementation('io.qameta.allure:allure-java-commons:2.8.1')
+    testImplementation("org.junit.jupiter:junit-jupiter-api:5.6.2")
+    testImplementation("org.junit.jupiter:junit-jupiter-engine:5.6.2")
+    testImplementation("org.junit.jupiter:junit-jupiter-params:5.6.2")
 }
 
 task openApiGeneratorTest(type: Test) {

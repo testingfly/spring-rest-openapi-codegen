@@ -42,4 +42,9 @@ public class OpenApiGeneratorTest {
         writer.flush();
         writer.close();
     }
+
+    @Test
+    public void printHello() throws Exception {
+        System.out.println("Hello");
+    }
 }

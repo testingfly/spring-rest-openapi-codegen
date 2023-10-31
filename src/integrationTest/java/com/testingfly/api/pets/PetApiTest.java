@@ -6,6 +6,7 @@ import com.testingfly.Pet;
 import com.testingfly.Tag;
 import com.testingfly.api.PetApi;
 import io.qameta.allure.Feature;
+import io.qameta.allure.Severity;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.DisplayName;
@@ -17,8 +18,10 @@ import org.springframework.http.HttpStatus;
 import java.util.Collections;
 import java.util.List;
 
+import static io.qameta.allure.SeverityLevel.CRITICAL;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
+@DisplayName("PetStore API")
 @Feature("PetStore API")
 class PetApiTest {
     private final static int port = 8080;
@@ -34,8 +37,9 @@ class PetApiTest {
 
     @Test
     @DisplayName("Should retrieve Pet by the valid PetId")
+    @Severity(CRITICAL)
     public void shouldGetPet() {
-        assertEquals("Sky1", petApi.getPetById(1L).getName());
+        assertEquals("Sky1", petApi.getPetById(1L).getName(), "Incorrect Pet Name!");
     }
 
     private static List<Pet> failingCreates() {

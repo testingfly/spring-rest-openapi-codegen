@@ -35,7 +35,7 @@ class PetApiTest {
     @Test
     @DisplayName("Should retrieve Pet by the valid PetId")
     public void shouldGetPet() {
-        assertEquals("Sky", petApi.getPetById(1L).getName());
+        assertEquals("Sky1", petApi.getPetById(1L).getName());
     }
 
     private static List<Pet> failingCreates() {

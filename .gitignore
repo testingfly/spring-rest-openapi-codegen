@@ -25,6 +25,9 @@ bin/
 ### VS Code ###
 .vscode/
 
+### Allure
+/.allure/
+
 ### Mac OS ###
 .DS_Store
 /build/

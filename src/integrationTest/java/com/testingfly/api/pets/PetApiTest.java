@@ -5,8 +5,10 @@ import com.testingfly.Category;
 import com.testingfly.Pet;
 import com.testingfly.Tag;
 import com.testingfly.api.PetApi;
+import io.qameta.allure.Feature;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.MethodSource;
@@ -17,6 +19,7 @@ import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
+@Feature("PetStore API")
 class PetApiTest {
     private final static int port = 8080;
     private final static String host = "localhost";
@@ -30,6 +33,7 @@ class PetApiTest {
     }
 
     @Test
+    @DisplayName("Should retrieve Pet by the valid PetId")
     public void shouldGetPet() {
         assertEquals("Sky", petApi.getPetById(1L).getName());
     }
@@ -41,13 +45,16 @@ class PetApiTest {
             new Pet().category(new Category()),
             new Pet().name("Sunny")        );
     }
-    @ParameterizedTest
+
     @MethodSource("failingCreates")
+    @DisplayName("Create Pet should fail with invalid or incomplete information")
+    @ParameterizedTest(name = "{displayName} ({argumentsWithNames})")
     public void shouldFailForInvalidCreates(Pet createPetRequest) {
         Assertions.assertThrows(Exception.class, () -> petApi.addPet(createPetRequest));
     }
 
     @Test
+    @DisplayName("Should create Pet with valid information")
     public void shouldCreatePet() {
         Category category = new Category();
         List<String> photoUrls = Collections.singletonList("xyz.com");
@@ -71,6 +78,7 @@ class PetApiTest {
     }
 
     @Test
+    @DisplayName("Should update pet with valid information")
     public void shouldUpdatePet() {
         assertEquals(HttpStatus.OK,
             petApi.updatePetWithHttpInfo(new Pet()).getStatusCode());

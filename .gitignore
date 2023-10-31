@@ -37,4 +37,4 @@ bin/
 /src/main/resources/
 /.idea/
 
-/src/integrationTest/resources/
+/src/integrationTest/resources/open-api-client/

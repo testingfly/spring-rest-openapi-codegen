@@ -65,10 +65,6 @@ test {
 
 }
 
-//configurations {
-//    all*.exclude module: 'logback-classic'
-//}
-
 sourceSets {
     main {
         java {

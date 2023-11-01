@@ -59,6 +59,7 @@ class PetApiTest {
 
     @Test
     @DisplayName("Should create Pet with valid information")
+    @org.junit.jupiter.api.Tag("Smoke")
     public void shouldCreatePet() {
         Category category = new Category();
         List<String> photoUrls = Collections.singletonList("xyz.com");

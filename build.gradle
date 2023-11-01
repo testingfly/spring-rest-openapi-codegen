@@ -62,7 +62,6 @@ test {
     systemProperty("junit.jupiter.execution.parallel.config.strategy", "dynamic")
     systemProperty("junit.jupiter.extensions.autodetection.enabled", "true")
 
-
 }
 
 sourceSets {
@@ -115,10 +114,36 @@ tasks.register('integrationTest', Test) {
     classpath = sourceSets.integrationTest.runtimeClasspath
     shouldRunAfter test
 
-    useJUnitPlatform()
+//    useJUnitPlatform {
+//        includeTags 'Smoke', '.'
+//    }
 
     testLogging {
         events "passed"
+    }
+    String includedTagsProperty = System.getProperty("includeTags")
+    boolean includedTagsPropertySet = includedTagsProperty != null
+
+    String excludedTagsProperty = System.getProperty("excludeTags")
+    boolean excludedTagsPropertySet = excludedTagsProperty != null
+
+    // Build configurations based on the tags
+
+    if (includedTagsPropertySet && excludedTagsPropertySet) {
+        useJUnitPlatform { JUnitPlatformOptions iit ->
+            includeTags includedTagsProperty
+            excludeTags excludedTagsProperty
+        }
+    } else if (includedTagsPropertySet && !excludedTagsPropertySet) {
+        useJUnitPlatform { JUnitPlatformOptions iit ->
+            includeTags includedTagsProperty
+        }
+    } else if (!includedTagsPropertySet && excludedTagsPropertySet) {
+        useJUnitPlatform { JUnitPlatformOptions iit ->
+            excludeTags excludedTagsProperty
+        }
+    } else {
+        useJUnitPlatform()
     }
 }
 
@@ -142,5 +167,29 @@ task generateClientSDK(type: GenerateTask) {
     enablePostProcessFile = false
 }
 
+test {
+    String includedTagsProperty = System.getProperty("includeTags")
+    boolean includedTagsPropertySet = includedTagsProperty != null
 
+    String excludedTagsProperty = System.getProperty("excludeTags")
+    boolean excludedTagsPropertySet = excludedTagsProperty != null
 
+    // Build configurations based on the tags
+
+    if (includedTagsPropertySet && excludedTagsPropertySet) {
+        useJUnitPlatform { JUnitPlatformOptions iit ->
+            includeTags includedTagsProperty
+            excludeTags excludedTagsProperty
+        }
+    } else if (includedTagsPropertySet && !excludedTagsPropertySet) {
+        useJUnitPlatform { JUnitPlatformOptions iit ->
+            includeTags includedTagsProperty
+        }
+    } else if (!includedTagsPropertySet && excludedTagsPropertySet) {
+            useJUnitPlatform { JUnitPlatformOptions iit ->
+                excludeTags excludedTagsProperty
+            }
+    } else {
+                useJUnitPlatform()
+            }
+}
